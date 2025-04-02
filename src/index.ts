@@ -1,7 +1,6 @@
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 import { Database } from 'sqlite3';
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import server from './server';
 import {initClient} from './client';
 
@@ -55,9 +54,6 @@ async function main() {
     console.log('All documents:', documents?.length, "====index.ts====\n");
     
     db.close();
-
-    const transport = new StdioServerTransport();
-    server.connect(transport);
 
     initClient()
   } catch (error) {
