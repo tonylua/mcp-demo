@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",
@@ -16,6 +17,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0"
+    "@types/node": "^20.11.0",
+    "patch-package": "^8.0.0"
   }
 }

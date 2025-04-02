@@ -2,7 +2,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import path from "path";
 
-const serverFile = path.resolve(__dirname, "server.ts");
+const serverFile = path.resolve(__dirname, "sqlite1_server.ts");
 
 export async function initClient() {
   const client = new Client(
@@ -33,6 +33,7 @@ export async function initClient() {
     }
   );
 
+  // https://mcpserver.cloud/server/mcp-sqlite-server
   const transport = new StdioClientTransport({
     command: "ts-node",
     args: [serverFile],
