@@ -5,7 +5,7 @@
       "command": "C://nvm4w//nodejs//npx",
       "args": [
         "ts-node",
-        "C://Users//luanluan//my_git//mcp-sqlite-server1//src//sqlite1_server.ts"
+        "C://Users//luanluan//my_git//mcp-sqlite-server1//dist//sqlite1_server.js"
       ],
       "env": {
         "PATH": "C://nvm4w//nodejs",
