@@ -8,8 +8,8 @@ import { z } from "zod";
 const dbPath = path.join(__dirname, "../test.db");
 
 // Helper to create DB connection
-const getDb = () => {
-  const db = new sqlite3.Database(dbPath);
+const getDb = (path?: string) => {
+  const db = new sqlite3.Database(path || dbPath);
   console.log("GET_DB", db);
   return {
     all: promisify(db.all.bind(db)),
@@ -24,8 +24,8 @@ export function createServer() {
     version: "1.0.0",
   });
 
-  server.resource("schema", "schema://main", async (uri) => {
-    const db = getDb();
+  server.resource("schema", "schema://main", async (uri: any, extra?: any) => {
+    const db = getDb(extra.db_path);
     try {
       const tables = (await db.all(
         "SELECT sql FROM sqlite_master WHERE type='table'"
@@ -43,42 +43,47 @@ export function createServer() {
     }
   });
 
-  server.tool("query", { sql: z.string() }, async ({ sql }) => {
-    const db = getDb();
-    try {
-      const results = await db.all(sql);
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(results, null, 2),
-          },
-        ],
-      };
-    } catch (err) {
-      const error = err as Error;
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Error: ${error.message}`,
-          },
-        ],
-        isError: true,
-      };
-    } finally {
-      await db.close();
+  server.tool(
+    "query",
+    { sql: z.string(), db_path: z.optional(z.string()) },
+    async ({ sql, db_path }) => {
+      const db = getDb(db_path);
+      try {
+        const results = await db.all(sql);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(results, null, 2),
+            },
+          ],
+        };
+      } catch (err) {
+        const error = err as Error;
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${error.message}`,
+            },
+          ],
+          isError: true,
+        };
+      } finally {
+        await db.close();
+      }
     }
-  });
+  );
 
   server.tool(
     "insert",
     {
+      db_path: z.optional(z.string()),
       table: z.string(),
       values: z.record(z.string(), z.unknown()),
     },
-    async ({ table, values }) => {
-      const db = getDb();
+    async ({ db_path, table, values }) => {
+      const db = getDb(db_path);
       try {
         const columns = Object.keys(values).join(", ");
         const placeholders = Object.keys(values)
