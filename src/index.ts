@@ -1,6 +1,7 @@
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 import { Database } from 'sqlite3';
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import server from './server';
 import {initClient} from './client';
 
@@ -33,15 +34,15 @@ async function main() {
     const db = await initializeDatabase();
     
     // Insert sample document
-    await new Promise((resolve, reject) => {
-      db.run("INSERT INTO documents (title, content) VALUES (?, ?)",
-        ["Demo Document", "This is a sample SQLite document"],
-        function(err) {
-          if (err) reject(err);
-          console.log(`Inserted document with ID: ${this.lastID}`);
-          resolve(true);
-        });
-    });
+    // await new Promise((resolve, reject) => {
+    //   db.run("INSERT INTO documents (title, content) VALUES (?, ?)",
+    //     ["Demo Document", "This is a sample SQLite document"],
+    //     function(err) {
+    //       if (err) reject(err);
+    //       console.log(`Inserted document with ID: ${this.lastID}`);
+    //       resolve(true);
+    //     });
+    // });
 
     // Query all documents
     const documents = await new Promise<any[]>((resolve, reject) => {
@@ -53,7 +54,10 @@ async function main() {
 
     console.log('All documents:', documents?.length, "====index.ts====\n");
     
-    // db.close();
+    db.close();
+
+    const transport = new StdioServerTransport();
+    server.connect(transport);
 
     initClient()
   } catch (error) {
