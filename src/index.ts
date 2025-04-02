@@ -1,8 +1,8 @@
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 import { Database } from 'sqlite3';
-import server from './server';
-import {initClient} from './client';
+import { createServer } from './server';
+import { initClient } from './client';
 
 const dbPath = path.resolve(__dirname, '../test.db');
 
@@ -27,11 +27,9 @@ async function initializeDatabase(): Promise<Database> {
   return db;
 }
 
-// Example CRUD operations
-async function main() {
+async function prepareDatabase() {
   try {
     const db = await initializeDatabase();
-    
     // Insert sample document
     // await new Promise((resolve, reject) => {
     //   db.run("INSERT INTO documents (title, content) VALUES (?, ?)",
@@ -55,10 +53,16 @@ async function main() {
     
     db.close();
 
-    initClient()
   } catch (error) {
     console.error('Database error:', error);
   }
+}
+
+// Example CRUD operations
+async function main() {
+  await prepareDatabase();
+
+  initClient()
 }
 
 main();

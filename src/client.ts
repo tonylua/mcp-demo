@@ -4,35 +4,35 @@ import path from "path";
 
 const serverFile = path.resolve(__dirname, "server.ts");
 
-const client = new Client(
-  {
-    name: "SQLite Explorer Client",
-    version: "1.0.0",
-  },
-  {
-    capabilities: {
-      prompts: {},
-      resources: {
-        schema: ["schema://main"],
-      },
-      tools: {
-        query: {
-          arguments: {
-            sql: "string",
-          },
-        },
-        insert: {
-          arguments: {
-            table: "string",
-            values: "object",
-          },
-        },
-      },
-    },
-  }
-);
-
 export async function initClient() {
+  const client = new Client(
+    {
+      name: "SQLite Explorer Client",
+      version: "0.0.0",
+    },
+    {
+      capabilities: {
+        prompts: {},
+        resources: {
+          schema: ["schema://main"],
+        },
+        tools: {
+          query: {
+            arguments: {
+              sql: "string",
+            },
+          },
+          insert: {
+            arguments: {
+              table: "string",
+              values: "object",
+            },
+          },
+        },
+      },
+    }
+  );
+
   const transport = new StdioClientTransport({
     command: "ts-node",
     args: [serverFile],
@@ -70,5 +70,3 @@ export async function initClient() {
   });
   console.log("3. Insert Result:", insertResult);
 }
-
-export default client;
